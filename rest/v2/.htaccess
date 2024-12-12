@@ -19,3 +19,15 @@ RewriteRule ^recipe/([0-9]+)$ controllers/developer/recipe/recipe.php?recipeid=$
 RewriteRule ^recipe/active/([0-9]+)$ controllers/developer/recipe/active.php?recipeid=$1 [L]
 RewriteRule ^recipe/search$ controllers/developer/recipe/search.php [L]
 RewriteRule ^recipe/page/([0-9]+)$ controllers/developer/recipe/page.php?start=$1 [L]
+
+RewriteRule ^category$ controllers/category/category.php [L]
+RewriteRule ^category/([0-9]+)$ controllers/category/category.php?categoryid=$1 [L]
+RewriteRule ^category/active/([0-9]+)$ controllers/category/active.php?categoryid=$1 [L]
+RewriteRule ^category/search$ controllers/category/search.php [L]
+RewriteRule ^category/page/([0-9]+)$ controllers/category/page.php?start=$1 [L]
+
+RewriteRule ^level$ controllers/level/level.php [L]
+RewriteRule ^level/([0-9]+)$ controllers/level/level.php?levelid=$1 [L]
+RewriteRule ^level/active/([0-9]+)$ controllers/level/active.php?levelid=$1 [L]
+RewriteRule ^level/search$ controllers/level/search.php [L]
+RewriteRule ^level/page/([0-9]+)$ controllers/level/page.php?start=$1 [L]

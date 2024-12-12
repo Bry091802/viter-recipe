@@ -1,60 +1,50 @@
+import useQueryData from "@/components/custom-hook/useQueryData";
+import Status from "@/components/partials/Status";
 import {
   setIsAdd,
   setIsArchive,
-  setIsConfirm,
   setIsDelete,
-  setIsRestore,
+  setIsRestore
 } from "@/components/store/storeAction";
 import { StoreContext } from "@/components/store/storeContext";
 import { Archive, ArchiveRestore, FilePenLine, Trash2 } from "lucide-react";
 import React from "react";
 import LoadMore from "../partials/LoadMore";
-import ModalConfirm from "../partials/modals/ModalConfirm";
-import ModalDelete from "../partials/modals/ModalDelete";
-import Pills from "../partials/Pills";
-import useQueryData from "@/components/custom-hook/useQueryData";
-import IconServerError from "../partials/IconServerError";
-import IconNoData from "../partials/IconNoData";
-import TableLoader from "../partials/TableLoader";
-import SpinnerTable from "../partials/spinners/SpinnerTable";
-import Status from "@/components/partials/Status";
-import ModalArchive from "@/components/partials/modal/ModalArchive";
 import ModalRestore from "@/components/partials/modal/ModalRestore";
+import ModalArchive from "@/components/partials/modal/ModalArchive";
+import ModalDelete from "@/components/partials/modal/ModalDelete";
 
-const RecipeTable = ({ setItemEdit }) => {
+const CategoryTable = ({ setIsCategoryEdit }) => {
   const { store, dispatch } = React.useContext(StoreContext);
-  const [isActive, setIsActive] = React.useState(0);
-  const [id, setId] = React.useState(null);
+  const [id, setIsId] = React.useState("");
   const {
-    isLoading,
     isFetching,
     error,
     data: result,
+    status,
   } = useQueryData(
-    `/v2/recipe`, // endpoint
+    `/v2/category`, // endpoint
     "get", // method
-    "recipe"
+    "category" // key
   );
 
   let counter = 1;
 
+  const handleEdit = (item) => {
+    dispatch(setIsAdd(true));
+    setIsCategoryEdit(item);
+  };
   const handleDelete = (item) => {
     dispatch(setIsDelete(true));
-    setId(item.recipe_aid);
+    setIsId(item.category_aid);
   };
   const handleRestore = (item) => {
     dispatch(setIsRestore(true));
-    setIsActive(1);
-    setId(item.recipe_aid);
+    setIsId(item.category_aid);
   };
   const handleArchive = (item) => {
     dispatch(setIsArchive(true));
-    setIsActive(0);
-    setId(item.recipe_aid);
-  };
-  const handleEdit = (item) => {
-    dispatch(setIsAdd(true));
-    setItemEdit(item);
+    setIsId(item.category_aid);
   };
 
   return (
@@ -69,8 +59,6 @@ const RecipeTable = ({ setItemEdit }) => {
                 <th>Status</th>
                 <th className="w-[50%]">Title</th>
                 <th>Category</th>
-                <th>Level</th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -100,19 +88,17 @@ const RecipeTable = ({ setItemEdit }) => {
                     <tr key={key}>
                       <td>{counter++}</td>
                       <td>
-                        {item.recipe_is_active === 1 ? (
+                        {item.category_is_active === 1 ? (
                           <Status text="Active" />
                         ) : (
                           <Status text="Inactive" />
                         )}
                       </td>
-                      <td>{item.recipe_title}</td>
-                      <td className="capitalize">{item.category_title}</td>
-                      <td className="capitalize">{item.level_title}</td>
+                      <td>{item.category_title}</td>
 
                       <td>
                         <ul className="table-action ">
-                          {item.recipe_is_active ? (
+                          {item.category_is_active === 1 ? (
                             <>
                               <li>
                                 <button
@@ -166,25 +152,28 @@ const RecipeTable = ({ setItemEdit }) => {
         </div>
       </div>
       {store.isDelete && (
-        <ModalDelete mysqlApiDelete={`/v2/recipe/${id}`} queryKey="recipe" />
+        <ModalDelete
+          setIsDelete={setIsDelete}
+          mysqlApiDelete={`/v2/category/${id}`}
+          queryKey={"category"}
+        />
       )}
-
       {store.isArchive && (
         <ModalArchive
           setIsArchive={setIsArchive}
-          mysqlEndpoint={`/v2/recipe/active/${id}`}
-          queryKey={"recipe"}
+          mysqlEndpoint={`/v2/category/active/${id}`}
+          queryKey={"category"}
         />
       )}
       {store.isRestore && (
         <ModalRestore
           setIsRestore={setIsRestore}
-          mysqlEndpoint={`/v2/recipe/active/${id}`}
-          queryKey={"recipe"}
+          mysqlEndpoint={`/v2/category/active/${id}`}
+          queryKey={"category"}
         />
       )}
     </>
   );
 };
 
-export default RecipeTable;
+export default CategoryTable;

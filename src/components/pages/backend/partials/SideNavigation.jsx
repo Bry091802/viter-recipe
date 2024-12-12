@@ -14,13 +14,18 @@ import { imgPath } from "../../../helpers/functions-general";
 const SideNavigation = ({ menu }) => {
   const links = [
     {
-      title: "Dashboard",
-      slug: "/admin/dashboard",
-      icon: <LayoutDashboard size={16} />,
+      title: "Recipe",
+      slug: "/admin/recipe",
+      icon: <UtensilsCrossed size={16} />,
     },
     {
       title: "Category",
-      slug: "/admin/recipe",
+      slug: "/admin/category",
+      icon: <UtensilsCrossed size={16} />,
+    },
+    {
+      title: "Level",
+      slug: "/admin/level",
       icon: <UtensilsCrossed size={16} />,
     },
   ];
@@ -35,19 +40,19 @@ const SideNavigation = ({ menu }) => {
         />
 
         <nav>
-          <ul className="mt-10">
+        <ul className="mt-10">
             {links.map((item, key) => (
               <li
                 className={`${
                   menu === item.slug.replaceAll("/admin/", "")
-                    ? "border-accent bg-accent opacity-100 text-center text-white"
+                    ? "border-accent bg-accent text-white  opacity-100"
                     : ""
                 } p-2 mb-2 rounded-md border border-transparent opacity-70 hover:opacity-100`}
                 key={key}
               >
                 <NavLink
                   to={`${item.slug}`}
-                  className="flex gap-2 text-base items-center"
+                  className="flex items-center text-base gap-3"
                 >
                   {item.icon} {item.title}
                 </NavLink>

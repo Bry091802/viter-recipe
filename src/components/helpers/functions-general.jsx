@@ -21,3 +21,9 @@ export const fetchFormData = (url, fd = {}) => {
     });
   return data;
 };
+export const GetFocus = (id) => {
+  React.useEffect(() => {
+    const obj = document.getElementById(id);
+    obj.focus();
+  }, []);
+};
