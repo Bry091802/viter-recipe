@@ -2,12 +2,6 @@ import React from "react";
 import ModalWrapper from "../partials/modals/ModalWrapper";
 import { ImagePlusIcon, X } from "lucide-react";
 import SpinnerButton from "../partials/spinners/SpinnerButton";
-import { Form, Formik } from "formik";
-import { InputPhotoUpload, InputText } from "@/components/helpers/FormInputs";
-import * as Yup from "yup";
-import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { queryData } from "@/components/helpers/queryData";
 import {
   setError,
   setIsAdd,
@@ -15,6 +9,13 @@ import {
   setSuccess,
 } from "@/components/store/storeAction";
 import { StoreContext } from "@/components/store/storeContext";
+import { Form, Formik } from "formik";
+import { InputPhotoUpload, InputText } from "@/components/helpers/FormInputs";
+import * as Yup from "Yup";
+import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryData } from "@/components/helpers/queryData";
+import { imgPath } from "@/components/helpers/functions-general";
 
 const ModalAddLevel = ({ itemEdit }) => {
   const { dispatch } = React.useContext(StoreContext);
@@ -32,7 +33,9 @@ const ModalAddLevel = ({ itemEdit }) => {
   const mutation = useMutation({
     mutationFn: (values) =>
       queryData(
-        itemEdit ? `/v2/level/${itemEdit.level_aid}` : "/v2/level",
+        itemEdit
+          ? `/v2/level/${itemEdit.level_aid}`
+          : "/v2/level",
         itemEdit ? "PUT" : "POST",
         values
       ),
@@ -56,6 +59,7 @@ const ModalAddLevel = ({ itemEdit }) => {
   const initVal = {
     level_aid: itemEdit ? itemEdit.level_aid : "",
     level_title: itemEdit ? itemEdit.level_title : "",
+    level_title_old: itemEdit ? itemEdit.level_title : "",
   };
   const yupSchema = Yup.object({
     level_title: Yup.string().required("Required"),

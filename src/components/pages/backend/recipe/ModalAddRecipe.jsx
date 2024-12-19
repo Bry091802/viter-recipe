@@ -14,7 +14,7 @@ import {
   setValidate,
 } from "@/components/store/storeAction";
 import { Field, FieldArray, Form, Formik } from "formik";
-import * as Yup from "yup";
+import * as Yup from "Yup";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryData } from "@/components/helpers/queryData";
 import ModalWrapper from "../partials/modals/ModalWrapper";
@@ -198,14 +198,14 @@ const ModalAddRecipe = ({ itemEdit }) => {
                           <option value="hidden"></option>
                           {categresult?.data.map((item, key) => {
                             return (
-                              <>
+                              <React.Fragment key={key}>
                                 {item.category_is_active === 1 && (
-                                  <option key={key} value={item.category_aid}>
+                                  <option value={item.category_aid}>
                                     {item.category_title}
                                   </option>
                                 )}
                                 ;
-                              </>
+                              </React.Fragment>
                             );
                           })}
                         </InputSelect>
@@ -219,14 +219,14 @@ const ModalAddRecipe = ({ itemEdit }) => {
                           <option value="hidden"></option>
                           {levelresult?.data.map((item, key) => {
                             return (
-                              <>
+                              <React.Fragment key={key}>
                                 {item.level_is_active === 1 && (
                                   <option key={key} value={item.level_aid}>
                                     {item.level_title}
                                   </option>
                                 )}
                                 ;
-                              </>
+                              </React.Fragment>
                             );
                           })}
                         </InputSelect>

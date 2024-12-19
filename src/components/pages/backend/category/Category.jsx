@@ -32,7 +32,7 @@ const Category = () => {
             <Header title="Category" subtitle="Manage Categories" />
             <div className="p-8">
               <div className="flex justify-between items-center">
-                <SearchBar />
+                <div></div>
                 <button className="btn btn-add" onClick={handleAdd}>
                   <Plus size={16} /> Add New
                 </button>

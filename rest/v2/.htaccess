@@ -7,13 +7,12 @@ RewriteCond %{REQUEST_FILENAME} !-f
 
 Header set Access-Control-Allow-Origin *
 
-#################################### ALL FOR DEVELOPER #################################
+
 
 RewriteRule ^upload-photo$ core/upload-photo.php [L]
 
 
 
-### Recipe ###
 RewriteRule ^recipe$ controllers/developer/recipe/recipe.php [L]
 RewriteRule ^recipe/([0-9]+)$ controllers/developer/recipe/recipe.php?recipeid=$1 [L]
 RewriteRule ^recipe/active/([0-9]+)$ controllers/developer/recipe/active.php?recipeid=$1 [L]

@@ -15,7 +15,7 @@ function checkApiKey()
     $un_pw = explode(":", base64_decode($auth_array[1]));
     $un = $un_pw[0];
 
-    if ($un !== $apiKey["scc_key"]) {
+    if ($un !== $apiKey["fca_key"]) {
         $response = new Response();
         $error = [];
         $response->setSuccess(false);
@@ -115,21 +115,6 @@ function checkId($id)
     }
 }
 
-function checkKeyCode($key)
-{
-    $response = new Response();
-    if ($key == '') {
-        $response->setSuccess(false);
-        $error = [];
-        $error['code'] = "400";
-        $error['error'] = "Invalid Key";
-        $error["success"] = false;
-        $response->setData($error);
-        $response->send();
-        exit;
-    }
-}
-
 // check search param
 function checkKeyword($keyword)
 {
@@ -192,7 +177,7 @@ function checkLogin($object)
 function loginAccess(
     $password,
     $hash_password,
-    $employee_email,
+    $email,
     $row,
     $result,
     $key
@@ -203,9 +188,9 @@ function loginAccess(
     if (password_verify($password, $hash_password)) {
         $payload = array(
             "iss" => "localhost", // A string containing the name or identifier of the issuer application.
-            "aud" => "hris",
+            "aud" => "tm",
             "iat" => time(),  // timestamp of token issuing.
-            "data" => array("email" => $employee_email, "data" => $row), // App payload
+            "data" => array("email" => $email, "data" => $row), // App payload
         );
         $jwt = JWT::encode($payload, $key, 'HS256');
 
@@ -244,8 +229,8 @@ function token(
     if (!empty($token)) {
         try {
             $decoded = JWT::decode($token, $key, array('HS256'));
-            ($object->developer_email = $decoded->data->email
-                | $object->user_other_email = $decoded->data->email);
+            ($object->user_system_email = $decoded->data->email
+                or $object->user_other_email = $decoded->data->email);
             $result = checkLogin($object);
             $row = $result->fetch(PDO::FETCH_ASSOC);
 
@@ -347,6 +332,28 @@ function checkUpdate($object)
     return $query;
 }
 
+// Update email
+function checkUpdateEmailForUser($object)
+{
+    $query = $object->updateEmailForUser();
+    checkQuery($query, "There's a problem processing your request. (update email)");
+    return $query;
+}
+
+function checkUpdateUserKeyAndNewEmail($object)
+{
+    $query = $object->updateUserKeyAndNewEmail();
+    checkQuery($query, "There's a problem processing your request. (update user key and new email)");
+    return $query;
+}
+
+function checkUpdateUserOTPcode($object)
+{
+    $query = $object->updateUserOTPcode();
+    checkQuery($query, "There's a problem processing your request. (update user key and new email)");
+    return $query;
+}
+
 // Set password
 function checkSetPassword($object)
 {
@@ -426,6 +433,14 @@ function checkDropColumnName($object, $column_name)
 {
     $query = $object->dropColumnName($column_name);
     checkQuery($query, "There's a problem processing your request. (drop column name)");
+    return $query;
+}
+
+// make the trainee inactive in trainee user page 
+function checkArchiveTraineeAccount($object)
+{
+    $query = $object->archiveTraineeAccount();
+    checkQuery($query, "There's a problem processing your request. (archive trainee user)");
     return $query;
 }
 
@@ -530,7 +545,6 @@ function compareEmail($object, $email_old, $email)
     }
 }
 
-// check association
 
 // check association
 function isAssociated($object)
@@ -539,21 +553,6 @@ function isAssociated($object)
     $count = $query->rowCount();
     checkExistence($count, "You cannot delete this item because it is already associated with other module.");
 }
-// check association
-function isUserSystemAssociated($object)
-{
-    $query = $object->checkUserSystemAssociation();
-    $count = $query->rowCount();
-    checkExistence($count, "You cannot delete this item because it is already associated with other module.");
-}
-
-function isUserOtherAssociated($object)
-{
-    $query = $object->checkUserOtherAssociation();
-    $count = $query->rowCount();
-    checkExistence($count, "You cannot delete this item because it is already associated with other module.");
-}
-
 
 // compare two values
 function compareTwoValues($object, $name_old, $name, $id_old, $id)
@@ -564,27 +563,11 @@ function compareTwoValues($object, $name_old, $name, $id_old, $id)
 }
 
 // return success
-function returnSuccess($object, $name, $query)
+function returnSuccess($object, $name, $query, $data = "")
 {
     $response = new Response();
     $returnData = [];
-    $returnData["data"] = [];
-    $returnData["count"] = $query->rowCount();
-    $returnData["{$name} ID"] = $object->lastInsertedId;
-    $returnData["success"] = true;
-    // return $returnData;
-    $response->setData($returnData);
-    $response->send();
-    exit;
-}
-
-
-// return success
-function returnSuccessOrder($object, $name, $query)
-{
-    $response = new Response();
-    $returnData = [];
-    $returnData["data"] = [];
+    $returnData["data"] = [$data];
     $returnData["count"] = $query->rowCount();
     $returnData["{$name} ID"] = $object->lastInsertedId;
     $returnData["success"] = true;
@@ -620,8 +603,55 @@ function getQueriedData($query)
     $response->send();
     exit;
 }
+// get total time spent
+function getTimeSpent($time_in, $time_out)
+{
+    // // Creating DateTime objects
+    // $timeObject1 = date_create($time_in);
+    // $timeObject2 = date_create($time_out);
 
+    // // Calculating the difference between time objects
+    // $interval = date_diff($timeObject1, $timeObject2);
+    // // $hours = $interval->h;
 
+    // $minutes = $interval->days * 24 * 60;
+    // $minutes += $interval->h * 60;
+    // $minutes += $interval->i;
+
+    // $totalHrsDecimal = $minutes * (1 / 60);
+    // return number_format($totalHrsDecimal, 4);
+
+    $start = new DateTime($time_in);
+    $end = new DateTime($time_out);
+    $diff = $start->diff($end);
+
+    $daysInSecs = $diff->format('%r%a') * 24 * 60 * 60;
+    $hoursInSecs = $diff->h * 60 * 60;
+    $minsInSecs = $diff->i * 60;
+
+    $seconds = $daysInSecs + $hoursInSecs + $minsInSecs + $diff->s;
+
+    $totalHrsDecimal = $seconds * (1 / 3600);
+
+    return number_format($totalHrsDecimal, 2);
+}
+
+// get total time spent in seconds
+function calculateTimeSpent($time_in, $time_out)
+{
+
+    $start = new DateTime($time_in);
+    $end = new DateTime($time_out);
+    $diff = $start->diff($end);
+
+    $daysInSecs = $diff->format('%r%a') * 24 * 60 * 60;
+    $hoursInSecs = $diff->h * 60 * 60;
+    $minsInSecs = $diff->i * 60;
+
+    $seconds = $daysInSecs + $hoursInSecs + $minsInSecs + $diff->s;
+
+    return $seconds;
+}
 
 function console_log($output, $with_script_tags = true)
 {
@@ -630,128 +660,4 @@ function console_log($output, $with_script_tags = true)
         $js_code = '<script>' . $js_code . '</script>';
     }
     echo $js_code;
-}
-
-
-
-function checkFilterByStatus($object)
-{
-    $query = $object->filterByStatus();
-    checkQuery($query, "Empty records. (filter by status)");
-    return $query;
-}
-
-// Read all
-function checkFilterByStatusAndSearch($object)
-{
-    $query = $object->filterByStatusAndSearch();
-    checkQuery($query, "Empty records. (filter by status and search)");
-    return $query;
-}
-
-
-// Token for system user
-function tokenDeveloper(
-    $object,
-    $token,
-    $key
-) {
-    $response = new Response();
-    $error = [];
-    $returnData = [];
-
-    if (!empty($token)) {
-        try {
-            $decoded = JWT::decode($token, $key, array('HS256'));
-            $object->developer_email = $decoded->data->email;
-            $result = checkLogin($object);
-            $row = $result->fetch(PDO::FETCH_ASSOC);
-
-            http_response_code(200);
-            $returnData["data"] = array_merge(
-                (array)$row,
-                array('user_key' => $decoded->data->data->developer_password), // data from login
-                array('role' => $decoded->data->data->role_name),
-            );
-            $returnData["count"] = $result->rowCount();
-            $returnData["success"] = true;
-            $returnData["message"] = "Access granted.";
-            $response->setData($returnData);
-            $response->send();
-            return $returnData;
-        } catch (Exception $ex) {
-            $response->setSuccess(false);
-            $error["count"] = 0;
-            $error["success"] = false;
-            $error['error'] = "Catch no token found.";
-            $response->setData($error);
-            $response->send();
-            exit;
-        }
-    } else {
-        $response->setSuccess(false);
-        $error["count"] = 0;
-        $error["success"] = false;
-        $error['error'] = "No token found.";
-        $response->setData($error);
-        $response->send();
-        exit;
-    }
-    checkEndpoint();
-    http_response_code(200);
-    checkAccess();
-}
-
-
-
-// Token for system user
-function tokenUser(
-    $object,
-    $token,
-    $key
-) {
-    $response = new Response();
-    $error = [];
-    $returnData = [];
-
-    if (!empty($token)) {
-        try {
-            $decoded = JWT::decode($token, $key, array('HS256'));
-            $object->user_email = $decoded->data->email;
-            $result = checkLogin($object);
-            $row = $result->fetch(PDO::FETCH_ASSOC);
-
-            http_response_code(200);
-            $returnData["data"] = array_merge(
-                (array)$row,
-                array('user_key' => $decoded->data->data->user_password), // data from login
-                array('role' => $decoded->data->data->role_name),
-            );
-            $returnData["count"] = $result->rowCount();
-            $returnData["success"] = true;
-            $returnData["message"] = "Access granted.";
-            $response->setData($returnData);
-            $response->send();
-            return $returnData;
-        } catch (Exception $ex) {
-            $response->setSuccess(false);
-            $error["count"] = 0;
-            $error["success"] = false;
-            $error['error'] = "Catch no token found.";
-            $response->setData($error);
-            $response->send();
-            exit;
-        }
-    } else {
-        $response->setSuccess(false);
-        $error["count"] = 0;
-        $error["success"] = false;
-        $error['error'] = "No token found.";
-        $response->setData($error);
-        $response->send();
-        exit;
-    }
-    checkEndpoint();
-    http_response_code(200);
-    checkAccess();
 }

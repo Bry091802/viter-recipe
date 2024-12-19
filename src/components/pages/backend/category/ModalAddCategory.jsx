@@ -11,10 +11,11 @@ import {
 import { StoreContext } from "@/components/store/storeContext";
 import { Form, Formik } from "formik";
 import { InputPhotoUpload, InputText } from "@/components/helpers/FormInputs";
-import * as Yup from "yup";
+import * as Yup from "Yup";
 import useUploadPhoto from "@/components/custom-hook/useUploadPhoto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryData } from "@/components/helpers/queryData";
+import { imgPath } from "@/components/helpers/functions-general";
 
 const ModalAddCategory = ({ isCategoryEdit, setIsCategoryEdit }) => {
   const { dispatch } = React.useContext(StoreContext);
@@ -58,6 +59,7 @@ const ModalAddCategory = ({ isCategoryEdit, setIsCategoryEdit }) => {
   const initVal = {
     category_aid: isCategoryEdit ? isCategoryEdit.category_aid : "",
     category_title: isCategoryEdit ? isCategoryEdit.category_title : "",
+    category_title_old: isCategoryEdit ? isCategoryEdit.category_title : "",
   };
   const yupSchema = Yup.object({
     category_title: Yup.string().required("Required"),
@@ -103,7 +105,6 @@ const ModalAddCategory = ({ isCategoryEdit, setIsCategoryEdit }) => {
                           onChange={handleChange}
                         />
                       </div>
-                      
                     </div>
 
                     <div className="form-action flex p-4 justify-end gap-3">

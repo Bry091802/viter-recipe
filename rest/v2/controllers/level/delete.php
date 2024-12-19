@@ -1,15 +1,23 @@
 <?php
+// check database connection
 $conn = null;
 $conn = checkDbConnection();
-$level = new level($conn);
-// $error = [];
-// $returnData = [];
+// make instance of classes
+$level = new Level($conn);
+// get $_GET data
+$error = [];
+$returnData = [];
 if (array_key_exists("levelid", $_GET)) {
+    // get data
     $level->level_aid = $_GET['levelid'];
     checkId($level->level_aid);
-    // isAssociated($level);
+    isAssociated($level);
+
+
     $query = checkDelete($level);
-    returnSuccess($level, "level", $query);
+
+    returnSuccess($level, "Level", $query);
 }
 
+// return 404 error if endpoint not available
 checkEndpoint();

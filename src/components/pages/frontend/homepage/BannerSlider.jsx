@@ -60,7 +60,7 @@ const BannerSlider = ({ result }) => {
               </Link>
             </div>
           </div>
-        ))}
+        ))}     
       </Slider>
     </section>
   );
