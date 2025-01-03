@@ -18,6 +18,7 @@ RewriteRule ^recipe/([0-9]+)$ controllers/developer/recipe/recipe.php?recipeid=$
 RewriteRule ^recipe/active/([0-9]+)$ controllers/developer/recipe/active.php?recipeid=$1 [L]
 RewriteRule ^recipe/search$ controllers/developer/recipe/search.php [L]
 RewriteRule ^recipe/page/([0-9]+)$ controllers/developer/recipe/page.php?start=$1 [L]
+RewriteRule ^recipe/read-recipe-by-category/([0-9]+)$ controllers/developer/recipe/read-recipe-by-category.php?start=$1 [L]
 
 RewriteRule ^category$ controllers/category/category.php [L]
 RewriteRule ^category/([0-9]+)$ controllers/category/category.php?categoryid=$1 [L]
@@ -25,8 +26,21 @@ RewriteRule ^category/active/([0-9]+)$ controllers/category/active.php?categoryi
 RewriteRule ^category/search$ controllers/category/search.php [L]
 RewriteRule ^category/page/([0-9]+)$ controllers/category/page.php?start=$1 [L]
 
+RewriteRule ^role$ controllers/settings/users/role/role.php [L]
+RewriteRule ^role/([0-9]+)$ controllers/settings/users/role/role.php?roleid=$1 [L]
+RewriteRule ^role/active/([0-9]+)$ controllers/settings/users/role/active.php?roleid=$1 [L]
+
 RewriteRule ^level$ controllers/level/level.php [L]
 RewriteRule ^level/([0-9]+)$ controllers/level/level.php?levelid=$1 [L]
 RewriteRule ^level/active/([0-9]+)$ controllers/level/active.php?levelid=$1 [L]
 RewriteRule ^level/search$ controllers/level/search.php [L]
 RewriteRule ^level/page/([0-9]+)$ controllers/level/page.php?start=$1 [L]
+
+### DEVELOPER ###
+RewriteRule ^developer$ controllers/new/settings/user/developer/developer.php [L]
+RewriteRule ^developer/([0-9]+)$ controllers/new/settings/user/developer/developer.php?developerid=$1 [L]
+RewriteRule ^developer/active/([0-9]+)$ controllers/new/settings/user/developer/active.php?developerid=$1 [L]
+RewriteRule ^developer/key/([A-Za-z0-9-]+)$ controllers/new/settings/user/developer/key.php?developerkey=$1 [L]
+RewriteRule ^developer/password$ controllers/new/settings/user/developer/set-password.php [L]
+RewriteRule ^developer/page/([0-9]+)$ controllers/new/settings/user/developer/page.php?start=$1 [L]
+RewriteRule ^developer/search$ controllers/new/settings/user/developer/search.php [L]

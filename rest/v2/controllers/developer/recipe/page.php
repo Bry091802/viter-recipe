@@ -4,12 +4,12 @@ require '../../../core/header.php';
 // use needed functions
 require '../../../core/functions.php';
 // use needed classes
-require '../../../models/developer/Question.php';
+require '../../../models/developer/Recipe.php';
 // check database connection
 $conn = null;
 $conn = checkDbConnection();
 // make instance of classes
-$question = new Question($conn);
+$recipe = new Recipe($conn);
 $response = new Response();
 // validate api key
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -17,17 +17,17 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
 
     if (array_key_exists("start", $_GET)) {
         // get data
-        $question->question_start = $_GET['start'];
-        $question->question_total = 15;
-        checkLimitId($question->question_start, $question->question_total);
-        $query = checkReadLimit($question);
-        $total_result = checkReadAll($question);
+        $recipe->recipe_start = $_GET['start'];
+        $recipe->recipe_total = 5;
+        checkLimitId($recipe->recipe_start, $recipe->recipe_total);
+        $query = checkReadLimit($recipe);
+        $total_result = checkReadAll($recipe);
         http_response_code(200);
         checkReadQuery(
             $query,
             $total_result,
-            $question->question_total,
-            $question->question_start
+            $recipe->recipe_total,
+            $recipe->recipe_start
         );
     }
     checkEndpoint();

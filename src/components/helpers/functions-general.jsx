@@ -6,8 +6,19 @@ export const devBaseUrl = `${projectURL}`;
 export const devBaseImgUrl = `${imgPath}`;
 
 export const ver = "v1";
+
+// ONLINE DEV and LOCAL hris
+export const devNavUrl = ""; //removed /v2
+
+
 export const devKey =
   "$2a$12$47wDvbLInZif/PVS8B6P3.7WxyJvUpBzZAWCsnWJUKq3nrn4qgmeO";
+
+  export const getUrlParam = () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams;
+  };
 
 export const fetchFormData = (url, fd = {}) => {
   console.log(fd);

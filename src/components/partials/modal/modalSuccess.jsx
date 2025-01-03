@@ -1,7 +1,8 @@
 import React from "react";
-import { setSuccess } from "../../../store/StoreAction";
-import { StoreContext } from "../../../store/StoreContext";
+
 import { GetFocus, devNavUrl } from "../../helpers/functions-general";
+import { StoreContext } from "@/components/store/storeContext";
+import { setSuccess } from "@/components/store/storeAction";
 
 const ModalSuccess = () => {
   const { store, dispatch } = React.useContext(StoreContext);
@@ -12,14 +13,14 @@ const ModalSuccess = () => {
     setAnimate("-translate-y-60");
     setTimeout(() => {
       dispatch(setSuccess(false));
-      // if (store.isAccountUpdated) {
-      //   localStorage.removeItem("glatoken");
-      //   store.credentials.data.role_is_developer === 1
-      //     ? window.location.replace(`${devNavUrl}/developer/login`)
-      //     : window.location.replace(`${devNavUrl}/login`);
-      //   dispatch(setIsAccountUpdated(false));
-      //   return;c
-      // }
+      if (store.isAccountUpdated) {
+        localStorage.removeItem("glatoken");
+        store.credentials.data.role_is_developer === 1
+          ? window.location.replace(`${devNavUrl}/developer/login`)
+          : window.location.replace(`${devNavUrl}/login`);
+        dispatch(setIsAccountUpdated(false));
+        return;c
+      }
     }, 200);
   };
 

@@ -29,7 +29,7 @@ const Recipe = () => {
             <Header title="Recipe" subtitle="Manage Recipes" />
             <div className="p-8">
               <div className="flex justify-between items-center">
-                <SearchBar />
+                <div></div>
                 <button className="btn btn-add" onClick={handleAdd}>
                   <Plus size={16} /> Add New
                 </button>
@@ -43,8 +43,13 @@ const Recipe = () => {
       {store.validate && <ModalValidation />}
       {store.error && <ModalError />}
       {store.success && <ToastSuccess />}
-      {/* <SpinnerWindow/> */}
-      {store.isAdd && <ModalAddRecipe itemEdit={itemEdit} />}
+      {store.isAdd && (
+        <ModalAddRecipe
+          setIsAdd={setIsAdd}
+          setItemEdit={setItemEdit}
+          itemEdit={itemEdit}
+        />
+      )}
     </>
   );
 };
